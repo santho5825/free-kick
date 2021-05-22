@@ -1,0 +1,8 @@
+.play_btn{
+    position: absolute;
+    margin: auto;
+    z-index: 999999999;
+    top: 36%;
+    left: 42%;
+    cursor: pointer;
+}
