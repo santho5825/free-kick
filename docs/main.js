@@ -16635,7 +16635,7 @@ function CInterface() {
                 } else if(winWidth >= 800){ 
                     val = 0.83;
                 }
-                timerEle.style.left = (width*(val))+'px';
+                // timerEle.style.left = (width*(val))+'px';
             }
             var multiplyVal = 0.87;
             if(winWidth >= 800){

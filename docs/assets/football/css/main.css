@@ -249,7 +249,7 @@ input:focus{
 .timer
 {
   position: absolute;
-  right: 5%;
+  right: 0% !important;
   top: 20%;
   background-image: url(../image/timer-bg.svg);
   background-repeat: no-repeat;
