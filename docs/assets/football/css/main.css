@@ -1082,6 +1082,7 @@ span.odd-gk {
   left: 15%;
 }
 }
+
 @media only screen and (max-width: 850px) {
   .show-odds {
    width: 12vw;
@@ -1127,4 +1128,10 @@ span.odd-gk {
 span.odd-gk {
   font-size: 1.8vw;
 }
+}
+@media only screen and (max-width: 750px) {
+  .cashOut{
+    bottom: 33%;
+  }
+
 }

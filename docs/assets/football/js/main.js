@@ -279,6 +279,8 @@ function CGame(e) {
     var goalCount = 0;
     var t, n, def,defRight, i, o, a, s, r, l, c,defender,defenderRight, d, h, u, _, p, E, f, m, g, T, A, S = null, v = null, b = !1, y = !1, w = !1, x = !1, O = !1, C = !1, L = !1, R = !1, N = !1, M = 1, I = 0, H = 0, P = 0, G = STATE_INIT, D = null;
     (this._init = function () {
+
+       
         $(s_oMain).trigger("start_session"),
             this.pause(!0),
             $(s_oMain).trigger("start_level", M),
@@ -427,7 +429,7 @@ function CGame(e) {
         (this.onPressUp = function () {
             // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onPressUp');
 
-            if (!y && (r && l && r.x != l.x && r.y != l.y)) {
+            if (!y && (r && l && r.x != l.x && r.y != l.y) && !s_oMain.goalScore) {
                 // // // console.log(JSON.stringify({'point': 0, 'r':r, 'l':l}), l, FORCE_RATE, 'original' ,'GK_ODD => ', GK_ODD);
                 var position = '';
 
@@ -670,7 +672,6 @@ function CGame(e) {
                 // // // console.log(r, l, FORCE_RATE, arr[indexVal].point, 'position => ', position);
             }
             rollReset = true;
-            s_oInterface.odd_point_toggle(true);
                 var e = Math.ceil(distanceV2(r, l)) * FORCE_RATE;
                 e > FORCE_MAX && (e = FORCE_MAX);
                 // if(P > 1e3){
@@ -1875,11 +1876,11 @@ function CInterface() {
 
             var c = s_oSpriteLibrary.getSprite("audio_icon");
             (t = { x: (CANVAS_WIDTH *multiplyVal) - 60, y:  60}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
+            a.setVisible(false);    
             audio[0] = a;
             
             var c = s_oSpriteLibrary.getSprite("audio_mute_icon");
-            (t = { x: (CANVAS_WIDTH *multiplyVal)-60, y:  40}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
-            a.setVisible(false);    
+            (t = { x: (CANVAS_WIDTH *multiplyVal+55), y:  60}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
             audio[1] = a;
 
 
@@ -1904,6 +1905,10 @@ function CInterface() {
                 (u = new CHelpText(s_oStage)),
                 u.fadeAnim(1, null),
                 this.refreshButtonPos(s_iOffsetX, s_iOffsetY);
+                setTimeout(()=>{
+                    this.odd_point_toggle();
+                }, 2000);
+                this.odd_point_toggle(true);
         }),
         (this.refreshButtonPos = function (i, c) {
             a.setPosition(t.x - i, c + t.y),s && s.setPosition(n.x - i, c + n.y), (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || l && l.setPosition(e.x - i, c + e.y);
@@ -1924,7 +1929,11 @@ function CInterface() {
         (this.refreshTextScoreBoard = function (e, t, n, i) {
             d.refreshTextScore(e), i && d.effectAddScore(n, t);
         }),
-        (this._onFullscreen = function () {
+        (this._onFullscreen = function (val) {
+            console.log(s_bFullscreen, 's_bFullscreen');
+            if(val) {
+                s_bFullscreen = false;
+            }
             s_bFullscreen ? (f.call(window.document), (s_bFullscreen = !1)) : (E.call(window.document.documentElement), (s_bFullscreen = !0)), sizeHandler();
         }),
         (this.createAnimText = function (e, t, n) {
@@ -1964,22 +1973,25 @@ function CInterface() {
         (this._onAudioToggle = function () {
             audio[0].setVisible(!!s_bAudioActive);
             audio[1].setVisible(!s_bAudioActive);
+            console.log('audio toggle', s_bAudioActive);
             createjs.Sound.setMute(s_bAudioActive), (s_bAudioActive = !s_bAudioActive);
         }),
         (this.odd_point_toggle = function(val){
-            let status = oddPoint[0].visible;
-            if(val){
-                status = true;
-            }
-            if(oddPoint && oddPoint.length){
-                oddPoint.forEach((oddPin, ind)=>{
-                    oddPin.visible = !status;
-                    // if(textPoint[ind]) textPoint[ind].visible = !status;
-                    if(textPoint[ind]) textPoint[ind].visible = !status;
-                })
-                $(s_oMain).trigger("odd_point", !status);
-                
-            }
+                let status = oddPoint[0].visible;
+                if(val){
+                    status = false;
+                }
+                if(oddPoint && oddPoint.length){
+                    let toggle = !status;
+                    oddPoint.forEach((oddPin, ind)=>{
+                        oddPin.visible = toggle;
+                        // if(textPoint[ind]) textPoint[ind].visible = !status;
+                        if(textPoint[ind]) textPoint[ind].visible = toggle;
+                    })
+                    console.log(toggle, 'oddPoint');
+                    $(s_oMain).trigger("odd_point", toggle);
+                    
+                }
         }),
         (this._onButInfoRelease = function () {
             // new CCreditsPanel();
@@ -2540,32 +2552,24 @@ function CMain(e) {
         (this.gotoGame = function (value) {
             goal_score = 0;
             if((GUARD_HIT || GK_HIT) && ROUNDS_NUM > 1){
-
                 BACK_WALL_GOAL_POSITION = { x: 0, y: 105, z: -2.7 },
                 GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;
-
-
             }
             // if(ROUNDS_NUM > 1) s_oMenu._onButPlayRelease();
-            
             value = value || n;
             this.gotoMenu(true);
             (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || 
-            (s_oSoundTrack = createjs.Sound.play("soundtrack", { loop: -1 }), s_oMenu._onAudioToggle())
+            (s_oSoundTrack = createjs.Sound.play("soundtrack", { loop: -1 }), s_oMenu._onAudioToggle(true))
             if(value.roundsNum > 1) {
                 $(s_oMain).trigger("next_level", true);
-                
                 setTimeout(()=>{
                     (s = new CGame(value)), (c = STATE_GAME);
-
-                }, 3000)
+                }, 2000)
             } else{
                 (s = new CGame(value)), (c = STATE_GAME);
-
             }
-            
-            // s_bMobile && s_oInterface._onFullscreen();
+            s_bMobile && s_oInterface._onFullscreen(true);
         }),
         (this.gotoHelp = function () {
             (a = new CHelp()), (c = STATE_HELP);
@@ -2992,8 +2996,11 @@ function CMenu() {
             s_bMobile && s_oInterface._onFullscreen();
 
         }),
-        (this._onAudioToggle = function () {
+        (this._onAudioToggle = function (s) {
             // // console.log('_onAudioToggle');
+            console.log('audio toggle', s_bAudioActive, '_onAudioToggle');
+            if(s)
+            s_bAudioActive = s;
             createjs.Sound.setMute(s_bAudioActive), (s_bAudioActive = !s_bAudioActive);
         }),
         (this._onButInfoRelease = function () {
