@@ -2430,8 +2430,8 @@ function CBall(e, t, n, i, o) {
             r.angularVelocity.x < 0 && (i = this._goToNextFrame),
                 n > 7 ? i() : n > 3 ? (_++, _ > 2 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > 1 ? (_++, _ > 3 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > MIN_BALL_VEL_ROTATION && (_++, _ > 4 / ROLL_BALL_RATE && (i(), (_ = 0)));
                 // if(GUARD_HIT || GK_HIT){
-                    // console.log(e,t,n,rollReset)
-                    if(t < 1 && rollReset){
+                    console.log(e,t,n,rollReset)
+                    if(e< 0 && t < 0 && rollReset){
                         rollReset = false;
                         s_oScenario.poleCollision();
                         s_oGame.resetPoleCollision();

@@ -197,7 +197,7 @@ var sendOrderObj = [
         "finishFlag": "N",
         "hitOdds": 8,
         "currentWinAmount": 500.00,
-        "gkHit": "N",
+        "gkHit": "Y",
         "guardHit": "N",
         "colorHit": "W"
     },
@@ -252,7 +252,7 @@ var sendOrderObj = [
         "hitOdds": 0.5,
         "currentWinAmount": 500.00,
         "gkHit": "Y",
-        "guardHit": "N",
+        "guardHit": "Y",
         "colorHit": "W"
     },
     "message": "Success"
@@ -310,7 +310,7 @@ var sendOrderObj = [
         "hitOdds": 0.5,
         "currentWinAmount": 500.00,
         "gkHit": "N",
-        "guardHit": "N",
+        "guardHit": "Y",
         "colorHit": "W"
     },
     "message": "Success"
