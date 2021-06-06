@@ -19,6 +19,13 @@ export class AppComponent implements AfterViewInit {
         currentRound = 0;
         timerInt:any;
         timer:any;
+        gameBalance: any = 0;
+        popupContShow: boolean = false;
+        cashoutShow: boolean = false;
+        quitShow: boolean = false;
+        fundsShow: boolean = false;
+        timesupShow: boolean = false;
+        earnedShow: boolean = false;
 constructor() {}
      /* check orientation */
      checkOrientation() {
@@ -60,7 +67,7 @@ constructor() {}
             this.timer = duration;
           this.resetTimer();
           }
-          localStorage.setItem('seconds', JSON.stringify(seconds));
+        //   localStorage.setItem('seconds', JSON.stringify(seconds));
           
       }, 1000);
   }
@@ -68,10 +75,14 @@ constructor() {}
   resetTimer(isNext?){
       clearInterval(this.timerInt);
       if (isNext) {
-        let _sec = localStorage.getItem('seconds');
+        // let _sec = localStorage.getItem('seconds');
         setTimeout(() => {
-            this.startTimer(_sec);
+            this.startTimer(60);
         }, 3000);
+      } else {
+        this.resetPopup();
+        this.popupContShow=!this.popupContShow;
+        this.timesupShow=!this.timesupShow
       }
   }
 
@@ -196,7 +207,7 @@ constructor() {}
 
   callMethod(status, s?){
     let stakeAmount:any = $('#stakeAmount').val();
-    if (s && stakeAmount < 1000) {
+    if (s && (stakeAmount < 1000 || this.gameBalance < 1000)) {
         alert("Minimum bet amount is 1000 IDR");
         return;
     }
@@ -298,17 +309,35 @@ constructor() {}
             //     $("#timer").show();
             //     this.startTimer(Number(this.levelData.data.globalConfig.countDown));
             // });
+            $(this.oMain).on("game_exit", (evt) => {
+                this.enablePlay = true;
+            });
             $(this.oMain).on("odd_point", (evt, val) => {
                 let odds:any = document.querySelectorAll('.show-odd-cont');
                 odds.forEach((k)=>{
-                    if(k.style) k.style.display = val? 'block': 'none';
+                    if(k.style) k.style.display = val? 'none': 'block';
                 })
                 $('.show-odd-cont').hide();
                 this.toggleOddContent(this.currentRound);
-                $('.show-odds').toggle();
+                if(val){
+                    $('.show-odds').show();
+
+                } else{
+                    $('.show-odds').hide();
+
+                }
+            });
+            $(this.oMain).on("btn_exit", (evt) => {
+                console.log('btn_exit');
+                
             });
             $(this.oMain).on("game_ready", (evt) => {
                 console.log('game ready');
+                // setTimeout(()=>{
+
+                //     this.oMain.gotoGame(mainArr, true);
+                // this.oMain.goalScore =0;
+                // } ,1000)
             });
             $(this.oMain).on("next_level", (evt) => {
                 console.log('Next Level');
@@ -414,7 +443,7 @@ constructor() {}
                 })
                 $('.winBet').html("maximum " + this.format(level.data.globalConfig.maxWin) + " winning amount");
                 $('.gameBalance').html("IDR " + this.format(level.data.mainBalance));
-                // $('.gameBalance').html("");
+                this.gameBalance = level.data.mainBalance;
                 $('#stakeAmount').attr('min', 0);/* level.data.globalConfig.minBet */
 
                 $('#stakeAmount').val(level.data.globalConfig.minBet);
@@ -449,5 +478,12 @@ setScore(val, isOnload){
     localStorage.setItem('winAmt', winAmt.toString());
     localStorage.setItem('stake', stake);
 }
-  
+  resetPopup() {
+    this.popupContShow = false;
+    this.cashoutShow = false;
+    this.quitShow = false;
+    this.fundsShow = false;
+    this.timesupShow = false;
+    this.earnedShow = false;
+  }
 }

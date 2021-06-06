@@ -17,7 +17,7 @@
         <span>0.5</span>
       </div>
       <div class="show-odd-cont show-level1">
-        <img src="assets/football/image/level1/odds-empty_2x.png" />
+        <img src="assets/football/image/level1/odds-bg-round-rec.svg" />
         <span class="odd-gk">Goal Kick</span>
         <span>0.5</span>
       </div>
@@ -81,6 +81,72 @@
     </div>
   </div>
 
+  <div class="popup-cont-2" *ngIf="popupContShow">
+    <div class="cont-img">
+      <img src="assets/football/image/top image-popup.svg" />
+    </div>
+    <div class="popup-body-cont">
+      <!-- Cashout section -->
+      <div class="cashout-cont" *ngIf="cashoutShow">
+        <div class="cashout-content">
+          <p>Are you sure you want to end the game and Cashout IDR ?</p>
+          <p>You have a chance to win IDR 80,000 on the next level</p>
+        </div>
+        <div class="popup-btn-cont">
+          <button class="btn-outline" (click)="resetPopup()">Cancel</button>
+          <button class="btn-fill btn-pop-cashout">Cashout</button>  
+        </div>
+      </div>
+      <!-- Cashout section -->
+      <!-- Quit game section -->
+      <div class="quit-cont text-center" *ngIf="quitShow">
+        <div class="quit-content">
+          <p>Are you sure you want to quit?</p>
+        </div>
+        <div class="popup-btn-cont">
+          <button class="btn-outline" (click)="resetPopup()">Cancel</button>
+          <button class="btn-fill btn-popup-quit">Quit</button>  
+        </div>
+      </div>
+      <!-- Quit game section -->
+      <!-- Insufficient funds section -->
+      <div class="funds-cont" *ngIf="fundsShow">
+        <div class="funds-content">
+          <h3 class="text-center">Insufficient Funds</h3>
+          <p>Minimum bet amount is IDR 1,000. Please make deposit to continue playing this game.</p>
+        </div>
+        <div class="popup-btn-cont">
+          <button class="btn-outline" (click)="resetPopup()">Cancel</button>
+          <button class="btn-fill btn-popup-funds">Deposit</button>  
+        </div>
+      </div>
+      <!-- Insufficient funds section -->
+      <!-- Times up section -->
+      <div class="timesup-cont" *ngIf="timesupShow">
+        <div class="timesup-content">
+          <h3 class="text-center">Time’s Up!</h3>
+          <p>Your time is up. Cashout will be applied.</p>
+          <p>Cashout Amount : <span class="timesup-cash">IDR 2,000</span></p>
+        </div>
+        <div class="popup-btn-cont">
+          <button class="btn-fill">Ok</button>  
+        </div>
+      </div>
+      <!-- Times up section -->
+      <!-- Earned section -->
+      <div class="earned-cont text-center" *ngIf="earnedShow">
+        <div class="earned-content">
+          <p>Your time is up. Cashout will be applied.</p>
+          <p>Cashout Amount : <span class="earned-cash">IDR 2,000</span></p>
+        </div>
+        <div class="popup-btn-cont">
+          <button class="btn-fill">Ok</button>  
+        </div>
+      </div>
+      <!-- Earned section -->
+    </div>
+  </div>
+
   <canvas id="canvas" class='ani_hack' width="1360" height="640"> </canvas>
   <div class="overlay_img">
     <!-- <img src="assets/football/image/bg_menu.jpg" alt=""> -->
@@ -91,4 +157,11 @@
   <div class="orientation">
     <img src="assets/football/image/orientation.png" />
   </div>
+  <!-- <div style="position: absolute;z-index: 999;top: 0px;">
+    <button (click)="resetPopup();popupContShow=!popupContShow;cashoutShow=!cashoutShow">cashoutShow</button>
+    <button (click)="resetPopup();popupContShow=!popupContShow;quitShow=!quitShow">quitShow</button>
+    <button (click)="resetPopup();popupContShow=!popupContShow;fundsShow=!fundsShow">fundsShow</button>
+    <button (click)="resetPopup();popupContShow=!popupContShow;timesupShow=!timesupShow">timesupShow</button>
+    <button (click)="resetPopup();popupContShow=!popupContShow;earnedShow=!earnedShow">earnedShow</button>
+  </div> -->
 </div>

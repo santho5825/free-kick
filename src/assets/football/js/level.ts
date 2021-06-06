@@ -195,9 +195,9 @@ var sendOrderObj = [
             "quickBet": "5,10,50,100,500"
         },
         "finishFlag": "N",
-        "hitOdds": 0.5,
+        "hitOdds": 8,
         "currentWinAmount": 500.00,
-        "gkHit": "Y",
+        "gkHit": "N",
         "guardHit": "N",
         "colorHit": "W"
     },
@@ -263,32 +263,36 @@ var sendOrderObj = [
         "orderId": 75506,
         "nextRoundsConfig": {
             "roundsNum": 3,
-            "colorRegion": "W,W,W,W,W,W,W,W,W,O,G,G,G,G,O,W,W,B,Y,Y,Y,Y,B,W,W,B,Y,Y,Y,Y,B,W",
+            "colorRegion": "W,W,W,W,W,W,W,W,W,O,R,G,G,G,O,W,W,B,R,Y,Y,Y,B,W,W,B,R,Y,Y,Y,B,W",
             "gkOdd": 0.5,
             "colorConfig": [
                 {
-                    "color": "W",
-                    "odds": 0.5
+                "color": "W",
+                "odds": 0.5
                 },
                 {
-                    "color": "Y",
-                    "odds": 3
+                "color": "Y",
+                "odds": 1.2
                 },
                 {
-                    "color": "G",
-                    "odds": 1.2
+                "color": "G",
+                "odds": 3
                 },
                 {
-                    "color": "B",
-                    "odds": 3
+                "color": "B",
+                "odds": 3
                 },
                 {
-                    "color": "O",
-                    "odds": 8
+                "color": "O",
+                "odds": 8
+                },
+                {
+                "color": "R",
+                "odds": 0.2
                 }
             ],
-            "guardNum": 0,
-            "guardPos": "right",
+            "guardNum": 1,
+            "guardPos": "left",
             "guardColor": "R"
         },
         "nextMaxWinAmount": 4000.00,
@@ -306,7 +310,7 @@ var sendOrderObj = [
         "hitOdds": 0.5,
         "currentWinAmount": 500.00,
         "gkHit": "N",
-        "guardHit": "Y",
+        "guardHit": "N",
         "colorHit": "W"
     },
     "message": "Success"
@@ -372,7 +376,7 @@ var sendOrderObj = [
         "nextRoundsConfig": {
             "roundsNum": 5,
             "colorRegion": "W,W,W,W,W,W,W,W,W,O,G,G,G,G,O,W,W,B,Y,Y,Y,Y,B,W,W,B,Y,Y,Y,Y,B,W",
-            "gkOdd": 0.5,
+            "gkOdd": 0.2,
             "colorConfig": [
                 {
                     "color": "W",
@@ -414,7 +418,7 @@ var sendOrderObj = [
         "hitOdds": 3,
         "currentWinAmount": 500.00,
         "gkHit": "N",
-        "guardHit": "Y",
+        "guardHit": "N",
         "colorHit": "W"
     },
     "message": "Success"

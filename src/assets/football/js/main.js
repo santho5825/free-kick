@@ -9,7 +9,7 @@ var Detector, s_bIsIphone, s_iScaleFactor;
 window.THREE = THREE;
 window.CANNON = CANNON;
 window.createjs = createjs;
-var LEVEL_STATUS, s_oMain, rollReset = false;
+var LEVEL_STATUS, s_oMain, rollReset, s_Game = false;
 var goal_score = 0, gkPos = 0,goalKeeperObj, goalScore;
 
 var oddPoint=[], textPoint = [], audio = [];
@@ -17,6 +17,7 @@ var oddPoint=[], textPoint = [], audio = [];
 var AREAS_INFO,
 GUARD_POS,
 ROUNDS_NUM,
+ORDER_ID,
 LEVEL_STATUS,
 HIT_ODD,
 GK_ODD,
@@ -51,14 +52,15 @@ function CGfxButton(e, t, n, i) {
             s.off("mousedown", this.buttonDown), s.off("pressup", this.buttonRelease), u.removeChild(s);
         }),
         (this.setVisible = function (e) {
-            // // console.log(s.image.currentSrc);
+            // // // console.log(s.image.currentSrc);
             if(s.image && s.image.currentSrc.indexOf('but_play') > -1){
                 e = !1;
             } 
-                
+            if (s)
             s.visible = e;
         }),
         (this.setCursorType = function (e) {
+            if(s)
             s.cursor = e;
         }),
         (this._initListener = function () {
@@ -77,6 +79,7 @@ function CGfxButton(e, t, n, i) {
             _ || (l > 0 ? (s.scaleX = 0.9) : (s.scaleX = -0.9), (s.scaleY = 0.9), o[ON_MOUSE_DOWN] && o[ON_MOUSE_DOWN].call(a[ON_MOUSE_DOWN], r[ON_MOUSE_DOWN]));
         }),
         (this.rotation = function (e) {
+            if (s)
             s.rotation = e;
         }),
         (this.getButton = function () {
@@ -233,6 +236,7 @@ function CPlayer(e, t, n) {
             return i;
         }),
         (this.setVisible = function (e) {
+            if(o)
             o.visible = e;
         }),
         (this.animFade = function (e) {
@@ -244,21 +248,22 @@ function CPlayer(e, t, n) {
                 });
         }),
         (this.viewCharacter = function (e) {
-            // // // console.log(e, 'viewchar');
-
+            // // // // console.log(e, 'viewchar');
+            if( a && a[e])
             a[e].visible = !0;
         }),
         (this.hideCharacter = function (e) {
-            // // // console.log(e, 'hidechar');
+            // // // // console.log(e, 'hidechar');
+            if( a && a[e])
             a[e].visible = !1;
         }),
         (this.getFrame = function () {
-            // // // console.log(r, 'r');
+            // // // // console.log(r, 'r');
             return r;
         }),
         (this.animPlayer = function () {
             if (((l += s_iTimeElaps), l > BUFFER_ANIM_PLAYER)) {
-                // // // console.error(r, 'animPlayer')
+                // // // // console.error(r, 'animPlayer')
                 if ((this.hideCharacter(r), !(NUM_SPRITE_PLAYER > r + 1))) return this.viewCharacter(r), (r = 0), (l = 0), !1;
                 this.viewCharacter(r + 1), r++, o.updateCache(), (l = 0);
             }
@@ -275,10 +280,12 @@ function call_goal_score(val){
         $(s_oMain).trigger("goal_score", val, s_oGame);
     }
 }
-function CGame(e) {
+function CGame(e, status) {
     var goalCount = 0;
     var t, n, def,defRight, i, o, a, s, r, l, c,defender,defenderRight, d, h, u, _, p, E, f, m, g, T, A, S = null, v = null, b = !1, y = !1, w = !1, x = !1, O = !1, C = !1, L = !1, R = !1, N = !1, M = 1, I = 0, H = 0, P = 0, G = STATE_INIT, D = null;
     (this._init = function () {
+
+       
         $(s_oMain).trigger("start_session"),
             this.pause(!0),
             $(s_oMain).trigger("start_level", M),
@@ -301,19 +308,28 @@ function CGame(e) {
             }
             s_oSpriteLibrary.addSprite("defender", "./assets/football/image/"+defender+".png"),
             s_oSpriteLibrary.addSprite("defender-right", "./assets/football/image/"+defenderRight+".png"),
-
-
             s_oSpriteLibrary.addSprite("bg_menu", "./assets/football/image/bg_menu.jpg"),
             s_oSpriteLibrary.addSprite("progress_bar", "./assets/football/sprites/progress_bar.png"),
             
-            s_oSpriteLibrary.loadSprites(),
-            (n = createBitmap(s_oSpriteLibrary.getSprite("bg_game")), undefined, undefined, CANVAS_WIDTH, CANVAS_HEIGHT),
-            n.cache(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT),
-            s.addChild(n),
+            s_oSpriteLibrary.loadSprites();
+            // if(status){
+            //     (n = createBitmap(s_oSpriteLibrary.getSprite("bg_menu")), undefined, undefined, CANVAS_WIDTH, CANVAS_HEIGHT),
+            //     n.cache(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT),
+            //     s.addChild(n);
+            // }
+            
+            // if(!status){
+                (n = createBitmap(s_oSpriteLibrary.getSprite("bg_game")), undefined, undefined, CANVAS_WIDTH, CANVAS_HEIGHT),
+                n.cache(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT),
+                s.addChild(n);
+            // s_oSpriteLibrary.addSprite("defender", "./assets/football/image/"+defender+".png"),
+            // s_oSpriteLibrary.addSprite("defender-right", "./assets/football/image/"+defenderRight+".png"),
+
+
             (i = new CScenario(M)),
             (D = SHOW_3D_RENDER ? camera : createOrthoGraphicCamera());
-        var e = s_oSpriteLibrary.getSprite("goal");
-        (u = new CGoal(376, 45, e, s)), 
+             var e = s_oSpriteLibrary.getSprite("goal");
+            (u = new CGoal(376, 45, e, s)), 
 
              (oddPoint[0] = createBitmap(s_oSpriteLibrary.getSprite("odd_middle_green")),undefined, undefined, 300, 80),
             (oddPoint[0].x = 435),
@@ -349,14 +365,14 @@ function CGame(e) {
         (def = createBitmap(s_oSpriteLibrary.getSprite("defender")),undefined, undefined, 300, 867),
         (def.x = GUARD_HIT?380: 420),
                 (def.y = 80),
-                // // console.log(ROUNDS_NUM, 'ROUNDS_NUM');
+                // // // console.log(ROUNDS_NUM, 'ROUNDS_NUM');
             ROUNDS_NUM >= 3 && s.addChild(def);
             if(ROUNDS_NUM >= 4){
 
                 (defRight = createBitmap(s_oSpriteLibrary.getSprite("defender-right")),undefined, undefined, 300, 867);
                 defRight.x =  ROUNDS_NUM >= 4 ? GUARD_HIT?900: 840: 870;
                 (defRight.y = 80);
-                // // console.log(ROUNDS_NUM, 'ROUNDS_NUM');
+                // // // console.log(ROUNDS_NUM, 'ROUNDS_NUM');
                 ROUNDS_NUM >= 3 && s.addChild(defRight);
             }
         var r = s_oSpriteLibrary.getSprite("ball");
@@ -374,12 +390,13 @@ function CGame(e) {
             h.animAllSwipe(),
             resizeCanvas3D(),
             setVolume(s_oSoundTrack, 0.35),
-            (t = new CInterface()),
+            (t = new CInterface(status));
             t.refreshTextScoreBoard(0, 0, 0, !1),
             t.refreshLaunchBoard(I, NUM_OF_PENALTY),
             (A = new CANNON.Vec3(0, 0, 0)),
             this.onExitHelp();
-    }),
+        // }
+         }),
         (this.createControl = function () {
             SHOW_3D_RENDER
                 ? (window.addEventListener("mousedown", this.onMouseDown), window.addEventListener("mousemove", this.onPressMove), window.addEventListener("mouseup", this.onPressUp))
@@ -395,6 +412,7 @@ function CGame(e) {
                 ? s.getChildIndex(e.getObject()) > s.getChildIndex(t.getObject()) && s.swapChildren(e.getObject(), t.getObject())
                 : e.getDepthPos() < t.getDepthPos() && s.getChildIndex(t.getObject()) > s.getChildIndex(e.getObject()) && s.swapChildren(t.getObject(), e.getObject());
         }),
+        
         (this.onExitHelp = function () {
             this.createControl(), this.pause(!1);
         }),
@@ -416,19 +434,35 @@ function CGame(e) {
             o.setPosition(t.x, t.y), o.scale(n), this.refreshShadowCast(o, e, n);
         }),
         (this.onMouseDown = function (e) {
-            // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onMouseDown');
+
             y || ((m = MS_TIME_SWIPE_START), h.removeTweens(), h.setVisible(!1), (r = { x: s_oStage.mouseX, y: s_oStage.mouseY }));
+            // // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onMouseDown');
         }),
+        
         (this.onPressMove = function () {
-            // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onPressMove');
+            // // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onPressMove');
 
             (l = { x: s_oStage.mouseX, y: s_oStage.mouseY }), (P += s_iTimeElaps);
         }),
         (this.onPressUp = function () {
-            // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onPressUp');
+            // // // console.log(s_oStage.mouseX, s_oStage.mouseY, 'onPressUp');
 
-            if (!y && (r && l && r.x != l.x && r.y != l.y)) {
-                // // // console.log(JSON.stringify({'point': 0, 'r':r, 'l':l}), l, FORCE_RATE, 'original' ,'GK_ODD => ', GK_ODD);
+            if (!y && (r && l && r.x != l.x && r.y != l.y) && !s_oMain.goalScore) {
+                // var params = {orderId:ORDER_ID, betAmount: $('#stakeAmount').val() ,whichClientType:'Mobile APK'};
+                // if(localStorage.getItem('jwt'))
+                // var authtoken = localStorage.getItem('jwt').replace(/"/g,"");
+                // var currDomain = (window.location.hostname == "localhost")?"https://www1.u.hl8id.uatserver.net":"";
+                // jQuery.ajax({url:currDomain+"/freekicks/game/send-order.fk",
+                // headers: {"Authorization": authtoken},
+                // type:"POST", data:params,
+                // dataType:"json",
+                // success:function(data, textStatus, jqXHR) {
+                //     if(data && data.data) {
+                //         HIT_ODD = data.data.hitOdds;
+                //         $(s_oMain).trigger("callSendOrder",[data]);
+                //     }
+
+                // // // // console.log(JSON.stringify({'point': 0, 'r':r, 'l':l}), l, FORCE_RATE, 'original' ,'GK_ODD => ', GK_ODD);
                 var position = '';
 
                 if(l){
@@ -444,11 +478,11 @@ function CGame(e) {
 
                 }
 
-                // // // console.log(l.x > 620 && l.x < 750, l.x > 620, l.x < 750);
-                
+                // // // // console.log(l.x > 620 && l.x < 750, l.x > 620, l.x < 750);
+          
                 var indexVal = AREAS_INFO.findIndex(job => job.value == HIT_ODD);
 
-                // // // console.log('indexVal => ',  GOAL_KEEPER_VISIBLE, 'GOAL_KEEPER_VISIBLE');
+                // // // // console.log('indexVal => ',  GOAL_KEEPER_VISIBLE, 'GOAL_KEEPER_VISIBLE');
                 var arr = [
                     {"point":0,"r":{"x":719.9894514767932,"y":475.45590433482806},"l":{"x":423.5056258790436,"y":44.9626307922272} , color: 'O', pos: 'LEFT'},
                     
@@ -478,7 +512,7 @@ function CGame(e) {
             //     // 0.9439775910364147
             // }
             var pos = o.getPhysics().position;
-            // // // console.log(pos, 'position');
+            // // // // console.log(pos, 'position');
             if(indexVal > -1){
                 var indVal = -1;
                 if(arr[indexVal].pos !== position){
@@ -493,7 +527,7 @@ function CGame(e) {
                     pos = arr[indexVal].pos;
                     goalKeeperObj = pos;
 
-                    // // // console.log(GUARD_HIT, 'GUARD_HIT');
+                    // // // // console.log(GUARD_HIT, 'GUARD_HIT');
                     if(!GUARD_HIT){
                         
                     //     if(pos == 'LEFT'){
@@ -570,7 +604,7 @@ function CGame(e) {
         } else if (HIT_ODD == 3) {
             offsetX = 1.12;
         } else if (HIT_ODD == 8) {
-            offsetX = 1.31;
+            offsetX = 1.15;
             offsetY = 1.15;
         }
     } 
@@ -614,7 +648,7 @@ function CGame(e) {
         
     }
 
-        // console.log(JSON.stringify({'point': 0, 'r':rVal, 'l':lVal}), l, FORCE_RATE, 'original' ,'GK_ODD => ', GK_ODD);
+        // // console.log(JSON.stringify({'point': 0, 'r':rVal, 'l':lVal}), l, FORCE_RATE, 'original' ,'GK_ODD => ', GK_ODD);
 
     // if(!s_bMobile){
    
@@ -665,21 +699,20 @@ function CGame(e) {
                 r = arr[indexVal].r;
                 l = arr[indexVal].l;
                 
-                // console.log(r, l, '*****', FORCE_RATE)
+                // // console.log(r, l, '*****', FORCE_RATE)
     
-                // // // console.log(r, l, FORCE_RATE, arr[indexVal].point, 'position => ', position);
+                // // // // console.log(r, l, FORCE_RATE, arr[indexVal].point, 'position => ', position);
             }
             rollReset = true;
-            s_oInterface.odd_point_toggle(true);
                 var e = Math.ceil(distanceV2(r, l)) * FORCE_RATE;
                 e > FORCE_MAX && (e = FORCE_MAX);
                 // if(P > 1e3){
                 //     (P = 1e3);
-                //     // console.log(P, 'P*******');
+                //     // // console.log(P, 'P*******');
                 // }  else{
                     P = 669;
                 // }
-                // console.log(r.x - l.x, r.y - l.y, 'vector')
+                // // console.log(r.x - l.x, r.y - l.y, 'vector')
                 var t = new CVector2(r.x - l.x, r.y - l.y);
                 t.scalarProduct(e);
                 var n = t.length();
@@ -691,15 +724,21 @@ function CGame(e) {
                      (R = s_oGame.goalProbability());
 
 
-                    // console.log(t.getX(), t.getY(), r.x - l.x, (r.x - l.x)*e, r.y - l.y, (r.y - l.y)* e, e,'t',i, '>', MAX_FORCE_Y, MIN_FORCE_Y, 'MIN_FORCE_Y',t.getX(), t.getY(),FORCE_MULTIPLIER_AXIS,R, n,'>',HIT_BALL_MAX_FORCE,'HIT_BALL_MIN_FORCE',HIT_BALL_MIN_FORCE, P);
-                    // console.log("TIRO if");
+                    // // console.log(t.getX(), t.getY(), r.x - l.x, (r.x - l.x)*e, r.y - l.y, (r.y - l.y)* e, e,'t',i, '>', MAX_FORCE_Y, MIN_FORCE_Y, 'MIN_FORCE_Y',t.getX(), t.getY(),FORCE_MULTIPLIER_AXIS,R, n,'>',HIT_BALL_MAX_FORCE,'HIT_BALL_MIN_FORCE',HIT_BALL_MIN_FORCE, P);
+                    // // console.log("TIRO if");
 
                 } else {
 
 
                     (l.x = 0), (l.y = 0);
                 }
-               // console.log("TIRO NULLO");
+               // // console.log("TIRO NULLO");
+
+                    //naga
+  
+                // }, error:function(jqXHR, textStatus, errorThrown) {
+                //     alert('send orer error');
+                // }})
             }
         }),
         (this.refreshShadowCast = function (e, t, n) {
@@ -717,7 +756,7 @@ function CGame(e) {
             // $(s_oMain).trigger("goal_score", HIT_ODD);
             // this.trigger_goal_score(HIT_ODD, GK_HIT, GK_ODD);
 
-           //// // // console.log(e, _, 'score', p);
+           //// // // // console.log(e, _, 'score', p);
         }),
         (this.trigger_goal_score = function(){
             var scoreValue = HIT_ODD;
@@ -742,15 +781,15 @@ function CGame(e) {
             playSound("ball_collision", 1, 0);
         }),
         (this.areaGoal = function () {
-            ////// // // console.log(b, L, R, 'areaGoal');
+            ////// // // // console.log(b, L, R, 'areaGoal');
             var pos = o.getPhysics().position;
-            // // // console.log(pos, 'position, area Goal', GOAL_KEEPER_VISIBLE, 'GOAL_KEEPER_VISIBLE');
+            // // // // console.log(pos, 'position, area Goal', GOAL_KEEPER_VISIBLE, 'GOAL_KEEPER_VISIBLE');
             if(!GOAL_KEEPER_VISIBLE || !GK_HIT || !GUARD_HIT )
             R = true;
             b || L  || (R ? ((b = !0), (E = TIME_RESET_AFTER_GOAL), this.textGoal(), this.calculateScore(), playSound("goal", 1, 0)) : this.goalKeeperSave());
         }),
         (this.goalKeeperSave = function () {
-            // // console.log(TEXT_SAVED);
+            // // // console.log(TEXT_SAVED);
             (L = !0), (E = TIME_RESET_AFTER_SAVE), t.createAnimText(TEXT_SAVED, 80, !1, TEXT_COLOR_1, TEXT_COLOR_STROKE), playSound("ball_saved", 1, 0), this.rejectBall(), (g = 1), (H = 0);
             // $(s_oMain).trigger("goal_score", HIT_ODD);
             this.trigger_goal_score(HIT_ODD);
@@ -774,32 +813,32 @@ function CGame(e) {
                 n = MAX_PERCENT_PROBABILITY - t;
                 this.addScore(n * g, n), (g += MULTIPLIER_STEP);
             }
-            // // // console.log(p, 'p', e);
+            // // // // console.log(p, 'p', e);
             // var e = AREAS_INFO[p].probability,
-           // // // console.error('goal awesome fdslkfdsknfkdsnfkdsbf')
+           // // // // console.error('goal awesome fdslkfdsknfkdsnfkdsbf')
 
         }),
         (this.goalProbability = function () {
             // p = -1;
-            ////// // // console.log(GOAL_KEEPER_VISIBLE, 'GOAL_KEEPER_VISIBLE');
+            ////// // // // console.log(GOAL_KEEPER_VISIBLE, 'GOAL_KEEPER_VISIBLE');
             if(!GOAL_KEEPER_VISIBLE){
-               //// // // console.log(CALCULATE_PROBABILITY.length, 'CALCULATE_PROBABILITY.length');
+               //// // // // console.log(CALCULATE_PROBABILITY.length, 'CALCULATE_PROBABILITY.length');
                 if(CALCULATE_PROBABILITY.length == 15) {
                     // CALCULATE_PROBABILITY.push( { xMax: 11, xMin: -12, zMax: 7, zMin: 0 },
                     // { xMax: 11, xMin: -12, zMax: 8, zMin: 0 },
                     // { xMax: 11, xMin: -13, zMax: 8, zMin: 0 },
                     // { xMax: 11, xMin: -13, zMax: 8, zMin: 5 });
                 }
-               //// // // console.log(CALCULATE_PROBABILITY.length, 'CALCULATE_PROBABILITY');
+               //// // // // console.log(CALCULATE_PROBABILITY.length, 'CALCULATE_PROBABILITY');
 
                 for (var e = 0; e < CALCULATE_PROBABILITY.length; e++){
                     A.z < CALCULATE_PROBABILITY[e].zMax && A.z > CALCULATE_PROBABILITY[e].zMin && A.x < CALCULATE_PROBABILITY[e].xMax && A.x > CALCULATE_PROBABILITY[e].xMin;
                     // && (p = e);
                     if(p > -1){
-                       //// // // console.log(CALCULATE_PROBABILITY[p], AREAS_INFO[p])
-                       //// // // console.log('answer => ',A.z ,' < ', CALCULATE_PROBABILITY[p].zMax,A.z < CALCULATE_PROBABILITY[p].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[p].zMin, A.z > CALCULATE_PROBABILITY[p].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[p].xMax, A.x < CALCULATE_PROBABILITY[p].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[p].xMin,A.x > CALCULATE_PROBABILITY[p].xMin,' && ');
+                       //// // // // console.log(CALCULATE_PROBABILITY[p], AREAS_INFO[p])
+                       //// // // // console.log('answer => ',A.z ,' < ', CALCULATE_PROBABILITY[p].zMax,A.z < CALCULATE_PROBABILITY[p].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[p].zMin, A.z > CALCULATE_PROBABILITY[p].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[p].xMax, A.x < CALCULATE_PROBABILITY[p].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[p].xMin,A.x > CALCULATE_PROBABILITY[p].xMin,' && ');
                         for (var e = 0; e < CALCULATE_PROBABILITY.length; e++){ 
-                           //// // // console.error(A.z ,' < ', CALCULATE_PROBABILITY[e].zMax,A.z < CALCULATE_PROBABILITY[e].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[e].zMin, A.z > CALCULATE_PROBABILITY[e].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[e].xMax, A.x < CALCULATE_PROBABILITY[e].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[e].xMin,A.x > CALCULATE_PROBABILITY[e].xMin,' && ');
+                           //// // // // console.error(A.z ,' < ', CALCULATE_PROBABILITY[e].zMax,A.z < CALCULATE_PROBABILITY[e].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[e].zMin, A.z > CALCULATE_PROBABILITY[e].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[e].xMax, A.x < CALCULATE_PROBABILITY[e].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[e].xMin,A.x > CALCULATE_PROBABILITY[e].xMin,' && ');
                         }
                         return false;
                     }
@@ -820,33 +859,33 @@ function CGame(e) {
                 
             }
             // p = 
-           //// // // console.warn('goal started fdslkfdsknfkdsnfkdsbf')
-           //// // // console.log(A, 'goalProbability', p, e);
+           //// // // // console.warn('goal started fdslkfdsknfkdsnfkdsbf')
+           //// // // // console.log(A, 'goalProbability', p, e);
             if(p == -1){
                 for (var e = 0; e < CALCULATE_PROBABILITY.length; e++){ 
-                   //// // // console.error(A.z ,' < ', CALCULATE_PROBABILITY[e].zMax,A.z < CALCULATE_PROBABILITY[e].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[e].zMin, A.z > CALCULATE_PROBABILITY[e].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[e].xMax, A.x < CALCULATE_PROBABILITY[e].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[e].xMin,A.x > CALCULATE_PROBABILITY[e].xMin,' && ');
+                   //// // // // console.error(A.z ,' < ', CALCULATE_PROBABILITY[e].zMax,A.z < CALCULATE_PROBABILITY[e].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[e].zMin, A.z > CALCULATE_PROBABILITY[e].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[e].xMax, A.x < CALCULATE_PROBABILITY[e].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[e].xMin,A.x > CALCULATE_PROBABILITY[e].xMin,' && ');
                 }
-               //// // // console.error(CALCULATE_PROBABILITY)
+               //// // // // console.error(CALCULATE_PROBABILITY)
             } else{
-               //// // // console.log(CALCULATE_PROBABILITY[p], AREAS_INFO[p])
-               //// // // console.log(A.z ,' < ', CALCULATE_PROBABILITY[p].zMax,A.z < CALCULATE_PROBABILITY[p].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[p].zMin, A.z > CALCULATE_PROBABILITY[p].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[p].xMax, A.x < CALCULATE_PROBABILITY[p].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[p].xMin,A.x > CALCULATE_PROBABILITY[p].xMin,' && ');
+               //// // // // console.log(CALCULATE_PROBABILITY[p], AREAS_INFO[p])
+               //// // // // console.log(A.z ,' < ', CALCULATE_PROBABILITY[p].zMax,A.z < CALCULATE_PROBABILITY[p].zMax,' && ' ,A.z,' > ',CALCULATE_PROBABILITY[p].zMin, A.z > CALCULATE_PROBABILITY[p].zMin,' && ' ,A.x,' < ',CALCULATE_PROBABILITY[p].xMax, A.x < CALCULATE_PROBABILITY[p].xMax,' && ',A.x,' > ',CALCULATE_PROBABILITY[p].xMin,A.x > CALCULATE_PROBABILITY[p].xMin,' && ');
             }
             if (-1 === p || !AREAS_INFO[p] || typeof p == 'undefined') return !1;
             for (var t = new Array(), e = 0; MAX_PERCENT_PROBABILITY > e; e++) t.push(!1);
             for (var e = 0; e < AREAS_INFO[p].probability; e++) t[e] = !0;
             var n = Math.floor(Math.random() * t.length);
-            ////// // // console.log(CALCULATE_PROBABILITY);
+            ////// // // // console.log(CALCULATE_PROBABILITY);
             return t[n];
         }),
         (this.addImpulseToBall = function (e) {
             if (!y && G === STATE_PLAY) {
                 var t = i.ballBody();
-                // console.log(t,'addImpulseToBall');
+                // // console.log(t,'addImpulseToBall');
                 i.addImpulse(t, e), i.setElementAngularVelocity(t, { x: 0, y: 0, z: 0 }), (y = !0), o.setVisible(!0), a.setVisible(!1), this.chooseDirectionGoalKeeper(e), playSound("kick", 1, 0);
             }
         }),
         (this.chooseDirectionGoalKeeper = function (e) {
-            // // console.log(R, p, 'p chooseDirectionGoalKeeper');
+            // // // console.log(R, p, 'p chooseDirectionGoalKeeper');
             if (R && !GK_HIT) {
                 var t = S.getAnimType();
                 switch (p) {
@@ -859,7 +898,7 @@ function CGame(e) {
                         this.chooseWrongDirGK(ANIM_GOAL_KEEPER_FAIL, t);
                 }
             } else
-            // // console.log(e.x, GOAL_KEEPER_TOLLERANCE_LEFT, AREA_GOALS_ANIM[p]);
+            // // // console.log(e.x, GOAL_KEEPER_TOLLERANCE_LEFT, AREA_GOALS_ANIM[p]);
                 switch (p) {
                     case -1:
                         e.x < GOAL_KEEPER_TOLLERANCE_LEFT ? S.runAnim(LEFT) : e.y > GOAL_KEEPER_TOLLERANCE_RIGHT && S.runAnim(RIGHT);
@@ -890,7 +929,7 @@ function CGame(e) {
                                 direction = RIGHT;
                             }  
                         }
-                        // // console.log('direction => ', p, AREA_GOALS_ANIM[direction], direction);
+                        // // // console.log('direction => ', p, AREA_GOALS_ANIM[direction], direction);
                         S.runAnim(direction);
                 }
             C = !0;
@@ -963,8 +1002,11 @@ function CGame(e) {
         (this.textGoal = function () {
             if (H < TEXT_CONGRATULATION.length) {
                 var e = !1;
-                var text = (GK_HIT && ROUNDS_NUM > 1) || (GUARD_HIT && ROUNDS_NUM >= 3)? TEXT_SAVED : TEXT_CONGRATULATION[H];
+                var text = (GK_HIT && ROUNDS_NUM > 1) || (GUARD_HIT && ROUNDS_NUM >= 3) ? TEXT_SAVED : TEXT_CONGRATULATION[H];
                 var scoreVal = (GK_HIT && ROUNDS_NUM > 1) ? GK_ODD: (GUARD_HIT && ROUNDS_NUM >= 3)? HIT_ODD: HIT_ODD;
+                if(scoreVal< 1){
+                    text = TEXT_SAVED;
+                } 
                 // $(s_oMain).trigger("goal_score", scoreVal);
                 this.trigger_goal_score(scoreVal);
 
@@ -976,13 +1018,16 @@ function CGame(e) {
                     text = (GK_HIT && ROUNDS_NUM > 1) || (GUARD_HIT && ROUNDS_NUM >= 3) ? TEXT_SAVED : TEXT_CONGRATULATION[n];
                     var scoreVal = (GK_HIT && ROUNDS_NUM > 1) ? GK_ODD: (GUARD_HIT && ROUNDS_NUM >= 3) ? HIT_ODD: HIT_ODD;
                 // $(s_oMain).trigger("goal_score", HIT_ODD);
+                if(scoreVal < 1){
+                    text = TEXT_SAVED;
+                } 
                 this.trigger_goal_score(HIT_ODD);
 
                 n >= TEXT_CONGRATULATION.length - 1 && (e = !0), t.createAnimText(text, TEXT_SIZE[n], e, TEXT_COLOR, TEXT_COLOR_STROKE);
             }
         }),
         (this.goalAnimation = function (e) {
-            // // // console.log(e, 'goalAnimation');
+            // // // // console.log(e, 'goalAnimation');
             
             e > FORCE_BALL_DISPLAY_SHOCK[0].min && e < FORCE_BALL_DISPLAY_SHOCK[0].max
                 ? this.displayShock(INTENSITY_DISPLAY_SHOCK[0].time, INTENSITY_DISPLAY_SHOCK[0].x, INTENSITY_DISPLAY_SHOCK[0].y)
@@ -1020,7 +1065,7 @@ function CGame(e) {
                 });
         }),
         (this.resetScene = function () {
-            // // // console.log('resetSccene');
+            // // // // console.log('resetSccene');
             (b = !1), (w = !1), (L = !1), (R = !1), (N = !1), (x = !1), S.setAlpha(0), S.fadeAnimation(1), S.runAnim(IDLE), this.resetBallPosition(), this.sortDepth(o, u), this.resetDefenderPosition();
         }),
         (this._onEnd = function () {
@@ -1031,26 +1076,26 @@ function CGame(e) {
         }),
         (this.ballOut = function () {
             if (!w && !b && !L) {
-                // // // console.log(w, b, L, 'balloiut');
+                // // // // console.log(w, b, L, 'balloiut');
                 var e = o.getPhysics().position;
                 var exVal = Math.ceil(e.x)-2;
             //     (e.y > BALL_OUT_Y || e.x > BACK_WALL_GOAL_SIZE.width || e.x < -BACK_WALL_GOAL_SIZE.width) &&
             // ((w = !0),  t.createAnimText(TEXT_BALL_OUT, 90, !1, TEXT_COLOR_1, TEXT_COLOR_STROKE), playSound("ball_saved", 1, 0), (g = 1), (H = 0)); 
 
 
-            // // // console.log(e.y,' > ',BALL_OUT_Y ,'|| ',e.x,' > ',BACK_WALL_GOAL_SIZE.width,' || ',exVal,' < ',-BACK_WALL_GOAL_SIZE.width),
-            // // // console.log(e.y > BALL_OUT_Y, e.x > BACK_WALL_GOAL_SIZE.width, Math.ceil(e.x)-2, Math.ceil(e.x)+2, exVal < -BACK_WALL_GOAL_SIZE.width,(E = TIME_RESET_AFTER_BALL_OUT)), 
-            // // // console.log('resetPoleCollision');
+            // // // // console.log(e.y,' > ',BALL_OUT_Y ,'|| ',e.x,' > ',BACK_WALL_GOAL_SIZE.width,' || ',exVal,' < ',-BACK_WALL_GOAL_SIZE.width),
+            // // // // console.log(e.y > BALL_OUT_Y, e.x > BACK_WALL_GOAL_SIZE.width, Math.ceil(e.x)-2, Math.ceil(e.x)+2, exVal < -BACK_WALL_GOAL_SIZE.width,(E = TIME_RESET_AFTER_BALL_OUT)), 
+            // // // // console.log('resetPoleCollision');
             // if(w = !0){
                 // if(e.x < -DEFENDER_GOAL_SIZE.width && ROUNDS_NUM >= 3 && (w = !0)) {
-                //     // console.log('pos--', e, DEFENDER_GOAL_SIZE.width);
+                //     // // console.log('pos--', e, DEFENDER_GOAL_SIZE.width);
                 //     p = 9;
                     
                 //     this.calculateScore()
                 //      playSound("goal", 1, 0);
                     // setTimeout(()=>{
                     //     var e = AREAS_INFO[p].value || AREAS_INFO[p].probability;
-                    //     // // console.log(p, 'p', e);
+                    //     // // // console.log(p, 'p', e);
                     //     var e = AREAS_INFO[p].probability,
                     //      var   t = MAX_PERCENT_PROBABILITY - e,
                     //         n = MAX_PERCENT_PROBABILITY - t;
@@ -1059,15 +1104,15 @@ function CGame(e) {
                     // })
                 // }
                 if(exVal < -BACK_WALL_GOAL_SIZE.width && (w = !0)) {
-                    // // // console.log('pos--', e);
+                    // // // // console.log('pos--', e);
                     p = 6;
                     // this.resetPoleCollision();
                     // this.calculateScore(), playSound("goal", 1, 0);
                     // alert('d')
                 } else if( (e.y > BALL_OUT_Y || e.x > BACK_WALL_GOAL_SIZE.width || e.x < -BACK_WALL_GOAL_SIZE.width) &&
                 ((w = !0))){
-                    // // console.log(exVal, '<', -BACK_WALL_GOAL_SIZE.width );
-                    // // // console.log('dfsdf');
+                    // // // console.log(exVal, '<', -BACK_WALL_GOAL_SIZE.width );
+                    // // // // console.log('dfsdf');
                     t.createAnimText(TEXT_BALL_OUT, 90, !1, TEXT_COLOR_1, TEXT_COLOR_STROKE), playSound("ball_saved", 1, 0), (g = 1), (H = 0);
                     // alert('else')
 
@@ -1081,12 +1126,12 @@ function CGame(e) {
         }),
         (this.animGoalKeeper = function () {
             if(GOAL_KEEPER_VISIBLE) {
-                y ? C && ((C = S.update()), C || (S.viewFrame(S.getAnimArray(), S.getAnimArray().length - 1), S.hideFrame(S.getAnimArray(), 0), S.fadeAnimation(0))) : S.update();
+                y ? C && ((C = S.update()), C || (S.viewFrame(S.getAnimArray(), S.getAnimArray() && S.getAnimArray().length - 1), S.hideFrame(S.getAnimArray(), 0), S.fadeAnimation(0))) : S.update();
             } 
         }),
         (this.resetPoleCollision = function () {
-            // // console.log('resetPoleCollision');
-            // // console.log(f, s_iTimeElaps, b, L);
+            // // // console.log('resetPoleCollision');
+            // // // console.log(f, s_iTimeElaps, b, L);
             f > 0 ? (f -= s_iTimeElaps) : (b && L) || (t.createAnimText(TEXT_BALL_OUT, 80, !1, TEXT_COLOR_1, TEXT_COLOR_STROKE), (g = 1), (H = 0), playSound("ball_saved", 1, 0), this.endTurn(), (f = TIME_POLE_COLLISION_RESET));
         }),
         (this.handSwipeAnim = function () {
@@ -1119,9 +1164,10 @@ function CGame(e) {
         AREAS_INFO = e.area_goal_prop,
         GUARD_POS = e.guardPos,
         ROUNDS_NUM = e.roundsNum,
+        ORDER_ID = e.orderId,
         goalScore = e.goalScore,
         LEVEL_STATUS = e.Level_status,
-        HIT_ODD = e.hitOdds,
+        HIT_ODD = e.hitOdds, // naga
         GK_ODD = e.gkOdd,
         GUARD_HIT = e.guardHit,
         GK_HIT = e.gkHit,
@@ -1210,7 +1256,7 @@ function CWinPanel(e) {
                     }),
                 $(s_oMain).trigger("save_score", e),
                 $(s_oMain).trigger("share_event", e);
-                ////// // // console.log(o.text, e, 'text score');
+                ////// // // // console.log(o.text, e, 'text score');
         }),
         (this._onContinue = function () {
             var e = this;
@@ -1310,7 +1356,9 @@ function CAreYouSurePanel(e) {
                 });
         }),
         (this._onButYes = function () {
-            (createjs.Ticker.paused = !1), this.unload(), s_oGame.onExit(), r.removeAllEventListeners();
+            (createjs.Ticker.paused = !1), this.unload(), s_oGame.onExit(), r.removeAllEventListeners(), (s_oMain && s_oMain.gotoMenu(true));
+            $(s_oMain).trigger("game_exit");
+            
         }),
         (this._onButNo = function () {
             s_oGame.pause(!1), this.unload(), (a.visible = !1), r.removeAllEventListeners();
@@ -1339,7 +1387,7 @@ function CSpriteLibrary() {
             o.call(a);
         }),
         (this._onSpriteLoaded = function () {
-            // // console.log(n, t);
+            // // // console.log(n, t);
             if(n == 302){
                 // debugger;
                 // ++n;
@@ -1393,12 +1441,14 @@ function CGoalKeeper(e, t, n) {
             (o.x = e), (o.y = t);
         }),
         (this.setVisible = function (e) {
+            if (o)
             o.visible = e;
         }),
         (this.fadeAnimation = function (e) {
             createjs.Tween.get(o, { override: !0 }).to({ alpha: e }, 500);
         }),
         (this.setAlpha = function (e) {
+            if (o)
             o.alpha = e;
         }),
         (this.getObject = function () {
@@ -1408,21 +1458,23 @@ function CGoalKeeper(e, t, n) {
             return c;
         }),
         (this.viewFrame = function (e, t) {
+            if (e && e[t])
             e[t].visible = !0;
         }),
         (this.hideFrame = function (e, t) {
+            if (e && e[t])
             e[t].visible = !1;
-            ////// // // console.log(e,t, 'hideframe');
+            ////// // // // console.log(e,t, 'hideframe');
         }),
         (this.getDepthPos = function () {
             return GOAL_KEEPER_DEPTH_Y;
         }),
         (this.animGoalKeeper = function (e, t) {
             if (((l += s_iTimeElaps), l > BUFFER_ANIM_PLAYER)) {
-                // // console.log(goalKeeperObj, 'goalKeeperObj', o.x);
-                // // console.log(o.x + 100 !== o.x, goalKeeperObj == 'RIGHT', !gkPos);
+                // // // console.log(goalKeeperObj, 'goalKeeperObj', o.x);
+                // // // console.log(o.x + 100 !== o.x, goalKeeperObj == 'RIGHT', !gkPos);
                 if(o.x + 100 !== o.x && goalKeeperObj == 'RIGHT' && !gkPos){
-                // console.error(goalKeeperObj, 'goalKeeperObj');
+                // // console.error(goalKeeperObj, 'goalKeeperObj');
 
                     o.x = o.x +100;
                     gkPos = o.x;
@@ -1430,7 +1482,7 @@ function CGoalKeeper(e, t, n) {
                     // PHYSICS_STEP = 1 / (FPS * STEP_RATE);
                 }
                 else if(o.x - 100 !== o.x && goalKeeperObj == 'LEFT' && !gkPos){
-                // console.error(goalKeeperObj, 'goalKeeperObj');
+                // // console.error(goalKeeperObj, 'goalKeeperObj');
 
                     o.x = o.x -100;
                     gkPos = o.x;
@@ -1447,9 +1499,11 @@ function CGoalKeeper(e, t, n) {
         }),
         (this.resetAnimFrame = function (e, t) {
             for (var n = 1; t > n; n++) e[n].visible = !1;
+            if (e && e[0])
             e[0].visible = !0;
         }),
         (this.setVisibleContainer = function (e, t) {
+            if (a && a[e])
             a[e].visible = t;
         }),
         (this.runAnim = function (e) {
@@ -1493,7 +1547,7 @@ function CRollingScore() {
     );
 }
 function trace(e) {
-    ////// // // console.log(e);
+    ////// // // // console.log(e);
 }
 function isIOS() {
     for (var e = ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"]; e.length; ) if (navigator.platform === e.pop()) return (s_bIsIphone = !0), !0;
@@ -1821,7 +1875,7 @@ function CScoreBoard(e) {
             (d.x = e), (d.y = t);
         }),
         (this.refreshTextScore = function (e) {
-            ////// // // console.error(a, s, e, 'rolling');
+            ////// // // // console.error(a, s, e, 'rolling');
             c.rolling(a, s, e);
         }),
         (this.effectAddScore = function (e, t) {
@@ -1838,7 +1892,7 @@ function CScoreBoard(e) {
         this
     );
 }
-function CInterface() {
+function CInterface(status) {
     var e, t, n, i, o, a, s, r, l, c, d, h, u, _, p = null, E = null, f = null, timerEle, canvasEle;
     return (
         (this._init = function () {
@@ -1850,36 +1904,44 @@ function CInterface() {
             if(canvasEle && timerEle){
                 let val = 0.71;
                 if(winWidth < 750 && winWidth > 650){
-                    val =  0.72;
+                    val =  0.69;
                 } else if(winWidth < 650){
                     val = 0.7;
                 } else if(winWidth >= 800){ 
                     val = 0.83;
                 }
-                timerEle.style.left = (width*(val))+'px';
+                // timerEle.style.left = (width*(val))+'px';
             }
             var multiplyVal = 0.87;
+            var audioValX = 0.06;
+            var audioValY = 0.19;
             if(winWidth >= 800){
                 multiplyVal = 0.92;
-            } else if(winWidth < 750 && winWidth > 650){
+                audioValX -= 0.03;
+                // audioValY-= 0.01;
+            } else if(winWidth < 750 && winWidth > 630){
                 multiplyVal = 0.88;
+                audioValX -= 0.08;
             }
+            console.log(CANVAS_WIDTH* multiplyVal);
             var c = s_oSpriteLibrary.getSprite("but_info");
             (t = { x: CANVAS_WIDTH *multiplyVal, y:  CANVAS_HEIGHT / 2+55 }), (a = new CGfxButton(t.x, t.y, c));
             a.addEventListener(ON_MOUSE_UP, this._onButInfoRelease, this); 
             var c = s_oSpriteLibrary.getSprite("but_exit");
             (t = { x: CANVAS_WIDTH *multiplyVal, y: 60 }), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onExit, this);
 
-            var c = s_oSpriteLibrary.getSprite("but_odd_point");
+            if(!status){
+                var c = s_oSpriteLibrary.getSprite("but_odd_point");
             (t = { x: CANVAS_WIDTH *multiplyVal, y:  CANVAS_HEIGHT / 2 - 25}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this.odd_point_toggle, this);
-
+            }
             var c = s_oSpriteLibrary.getSprite("audio_icon");
-            (t = { x: (CANVAS_WIDTH *multiplyVal) - 60, y:  60}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
+            (t = { x: (CANVAS_WIDTH *(multiplyVal-0.06)), y:  (CANVAS_HEIGHT / 2)*0.19}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
+            if(s_bAudioActive) a.setVisible(false);    
             audio[0] = a;
             
             var c = s_oSpriteLibrary.getSprite("audio_mute_icon");
-            (t = { x: (CANVAS_WIDTH *multiplyVal)-60, y:  40}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
-            a.setVisible(false);    
+            (t = { x: (CANVAS_WIDTH *(multiplyVal-audioValX)), y:  (CANVAS_HEIGHT / 2)*(audioValY)}), (a = new CGfxButton(t.x, t.y, c)), a.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
+            if(!s_bAudioActive) a.setVisible(false);    
             audio[1] = a;
 
 
@@ -1898,12 +1960,19 @@ function CInterface() {
                 E &&
                     !inIframe() &&
                     ((c = s_oSpriteLibrary.getSprite("but_fullscreen")), 
-                    (o = { x: CANVAS_WIDTH - 500, y: c.height / 2 + 10 }), (r = new CToggle(o.x, o.y, c, !1, s_oStage)), r.addEventListener(ON_MOUSE_UP, this._onFullscreen, this)),
+                    (o = { x: CANVAS_WIDTH - 2000, y: c.height / 2 + 10 }), (r = new CToggle(o.x, o.y, c, !1, s_oStage)), r.addEventListener(ON_MOUSE_UP, this._onFullscreen, this)),
                 (d = new CScoreBoard(s_oStage)),
                 (h = new CLaunchBoard(s_oStage)),
-                (u = new CHelpText(s_oStage)),
+               
+                (u = new CHelpText(s_oStage, status)),
                 u.fadeAnim(1, null),
                 this.refreshButtonPos(s_iOffsetX, s_iOffsetY);
+                if(!status){
+                    setTimeout(()=>{
+                        this.odd_point_toggle();
+                    }, 4000);
+                    this.odd_point_toggle(true);
+                }
         }),
         (this.refreshButtonPos = function (i, c) {
             a.setPosition(t.x - i, c + t.y),s && s.setPosition(n.x - i, c + n.y), (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || l && l.setPosition(e.x - i, c + e.y);
@@ -1924,8 +1993,55 @@ function CInterface() {
         (this.refreshTextScoreBoard = function (e, t, n, i) {
             d.refreshTextScore(e), i && d.effectAddScore(n, t);
         }),
-        (this._onFullscreen = function () {
-            s_bFullscreen ? (f.call(window.document), (s_bFullscreen = !1)) : (E.call(window.document.documentElement), (s_bFullscreen = !0)), sizeHandler();
+        (this._onFullscreen = function (val) {
+            // console.log(s_bFullscreen, 's_bFullscreen');
+            // if(val && val !== s_bFullscreen) {
+                if(val && !s_bFullscreen) {
+                    this.fullScreenTgl();
+                    s_bFullscreen = true;
+                }
+                if(!val && s_bFullscreen) {
+                    this.exitFullScreenTgl();
+                    s_bFullscreen = false;
+
+                }
+                // s_bFullscreen ? (f.call(window.document), (s_bFullscreen = !1)) : (E.call(window.document.documentElement), (s_bFullscreen = !0)), sizeHandler();
+            // }else if(!val){
+                // this.fullScreenTgl();
+                // s_bFullscreen ? (f.call(window.document), (s_bFullscreen = !1)) : (E.call(window.document.documentElement), (s_bFullscreen = !0)), sizeHandler();
+
+            // }
+        }),
+        (this.fullScreenTgl = function() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen))
+    {
+        if (document.documentElement.requestFullScreen){
+            document.documentElement.requestFullScreen();
+        }
+        else if (document.documentElement.mozRequestFullScreen){ /* Firefox */
+            document.documentElement.mozRequestFullScreen();
+        }
+        else if (document.documentElement.webkitRequestFullScreen){   /* Chrome, Safari & Opera */
+            document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+        else if (document.msRequestFullscreen){ /* IE/Edge */
+            document.documentElement.msRequestFullscreen();
+        }
+    }
+        }), 
+        (this.exitFullScreenTgl = function() {
+            if (document.cancelFullScreen){
+                document.cancelFullScreen();
+            }
+            else if (document.mozCancelFullScreen){ /* Firefox */
+                document.mozCancelFullScreen();
+            }
+            else if (document.webkitCancelFullScreen){   /* Chrome, Safari and Opera */
+                document.webkitCancelFullScreen();
+            }
+            else if (document.msExitFullscreen){ /* IE/Edge */
+                document.msExitFullscreen();
+            }                                         
         }),
         (this.createAnimText = function (e, t, n) {
             var i = new createjs.Container(),
@@ -1964,30 +2080,34 @@ function CInterface() {
         (this._onAudioToggle = function () {
             audio[0].setVisible(!!s_bAudioActive);
             audio[1].setVisible(!s_bAudioActive);
-            createjs.Sound.setMute(s_bAudioActive), (s_bAudioActive = !s_bAudioActive);
+            // console.log('audio toggle', s_bAudioActive);
+            createjs.Sound.setMute(!s_bAudioActive), (s_bAudioActive = !s_bAudioActive);
         }),
         (this.odd_point_toggle = function(val){
-            let status = oddPoint[0].visible;
-            if(val){
-                status = true;
-            }
-            if(oddPoint && oddPoint.length){
-                oddPoint.forEach((oddPin, ind)=>{
-                    oddPin.visible = !status;
-                    // if(textPoint[ind]) textPoint[ind].visible = !status;
-                    if(textPoint[ind]) textPoint[ind].visible = !status;
-                })
-                $(s_oMain).trigger("odd_point", !status);
-                
-            }
+                let status = oddPoint[0].visible;
+                if(val){
+                    status = false;
+                }
+                if(oddPoint && oddPoint.length){
+                    let toggle = !status;
+                    oddPoint.forEach((oddPin, ind)=>{
+                        oddPin.visible = toggle;
+                        // if(textPoint[ind]) textPoint[ind].visible = !status;
+                        if(textPoint[ind]) textPoint[ind].visible = toggle;
+                    })
+                    // console.log(toggle, 'oddPoint');
+                    $(s_oMain).trigger("odd_point", toggle);
+                    
+                }
         }),
         (this._onButInfoRelease = function () {
             // new CCreditsPanel();
             $('.popup-cont').show();
         }),
         (this._onExit = function () {
-            var e = new CAreYouSurePanel(s_oStage);
-            e.show();
+            $(s_oMain).trigger("btn_exit", true);
+            // var e = new CAreYouSurePanel(s_oStage);
+            // e.show();
         }),
         (this.unloadPause = function () {
             c.unload(), (c = null);
@@ -2000,7 +2120,7 @@ function CInterface() {
         this
     );
 }
-function CHelpText(e) {
+function CHelpText(e, status) {
     var t, n, i, o = e;
     var multiplyVal = 0.8;
     var winWidth = window.outerWidth;
@@ -2012,17 +2132,21 @@ function CHelpText(e) {
     return (
         (this._init = function () {
             (i = new createjs.Container()),
-                o.addChild(i),
-                (t = new createjs.Text('Show Odds', "25px " + FONT_GAME, TEXT_COLOR)),
-                (t.x = CANVAS_WIDTH* multiplyVal),
-                (t.y = (CANVAS_HEIGHT / 2)-50),
-                (t.lineWidth= 20),
-                i.addChild(t),
+                o.addChild(i);
+                
                 (t = new createjs.Text('Game Info', "25px " + FONT_GAME, TEXT_COLOR)),
                 (t.x = CANVAS_WIDTH* multiplyVal),
                 (t.y = CANVAS_HEIGHT / 2+30),
                 (t.lineWidth= 20),
                 i.addChild(t),
+                t && t.setVisible && t.setVisible(true);
+                if(!status){
+                (t = new createjs.Text('Show Odds', "25px " + FONT_GAME, TEXT_COLOR)),
+                (t.x = CANVAS_WIDTH* multiplyVal),
+                (t.y = (CANVAS_HEIGHT / 2)-50),
+                (t.lineWidth= 20),
+                i.addChild(t),
+                t && t.setVisible && t.setVisible(true),
                 (t = new createjs.Text(TEXT_HELP, "42px " + FONT_GAME, TEXT_COLOR)),
                 (t.x = CANVAS_WIDTH / 2),
                 (t.y = CANVAS_HEIGHT_HALF),
@@ -2073,7 +2197,7 @@ function CHelpText(e) {
                 (textPoint[5].y = 200),
                 (textPoint[5].textAlign = "center"),
                 i.addChild(textPoint[5]);
-
+            }
 
 
                
@@ -2136,7 +2260,7 @@ function CScenario() {
                     mul = (o == 0 || o == 2 ? 2: 8);
                     AREA_GOAL_PROPERTIES.width = o == 0 || o == 2 ? 2: 17;
                     (t = mulX[o]);
-                //    // console.log( '{ x :',t,',y:',FIRST_AREA_GOAL_POS.y, ',z:', n,'}', AREA_GOAL_PROPERTIES);
+                //    // // console.log( '{ x :',t,',y:',FIRST_AREA_GOAL_POS.y, ',z:', n,'}', AREA_GOAL_PROPERTIES);
                     s_oScenario.createAreaGoal({ x: t+5, y: FIRST_AREA_GOAL_POS.y, z: n }, AREA_GOAL_PROPERTIES, COLOR_AREA_GOAL[e], AREAS_INFO[e]);
                     e++;
                 } 
@@ -2167,12 +2291,12 @@ function CScenario() {
             if (
                 (t.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2),
                 d.transformAllPoints(new CANNON.Vec3(), t),
-               //// // // console.log(POLE_UP_SIZE),
+               //// // // // console.log(POLE_UP_SIZE),
                 h.addShape(c, new CANNON.Vec3(0.5 * POLE_UP_SIZE.height, 0, 0)),
                 h.addShape(c, new CANNON.Vec3(0.5 * -POLE_UP_SIZE.height, 0, 0)),
                 h.addShape(d, new CANNON.Vec3(0, 0, 0.5 * POLE_RIGHT_LEFT_SIZE.height)),
                 h.position.set(BACK_WALL_GOAL_POSITION.x, BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth - 40, BACK_WALL_GOAL_POSITION.z-3),
-               // console.log(BACK_WALL_GOAL_POSITION.x, BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth - 40, BACK_WALL_GOAL_POSITION.z-3, '_createGoal'),
+               // // console.log(BACK_WALL_GOAL_POSITION.x, BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth - 40, BACK_WALL_GOAL_POSITION.z-3, '_createGoal'),
                 h.addEventListener("collide", function (e) {
                     s_oScenario.poleCollision();
                 }),
@@ -2184,9 +2308,9 @@ function CScenario() {
             }
         }),
         (this.createBackGoalWall = function () {
-        //    // console.log('BACK_WALL_GOAL_SIZE => ',BACK_WALL_GOAL_SIZE, BACK_WALL_GOAL_POSITION,'createBackGoalWall');
-           //// // // console.log('UP_WALL_GOAL_SIZE => ',UP_WALL_GOAL_SIZE.width, UP_WALL_GOAL_SIZE.depth, UP_WALL_GOAL_SIZE.height);
-           //// // // console.log('LEFT_RIGHT_WALL_GOAL_SIZE => ',LEFT_RIGHT_WALL_GOAL_SIZE.width, LEFT_RIGHT_WALL_GOAL_SIZE.depth, LEFT_RIGHT_WALL_GOAL_SIZE.height);
+        //    // // console.log('BACK_WALL_GOAL_SIZE => ',BACK_WALL_GOAL_SIZE, BACK_WALL_GOAL_POSITION,'createBackGoalWall');
+           //// // // // console.log('UP_WALL_GOAL_SIZE => ',UP_WALL_GOAL_SIZE.width, UP_WALL_GOAL_SIZE.depth, UP_WALL_GOAL_SIZE.height);
+           //// // // // console.log('LEFT_RIGHT_WALL_GOAL_SIZE => ',LEFT_RIGHT_WALL_GOAL_SIZE.width, LEFT_RIGHT_WALL_GOAL_SIZE.depth, LEFT_RIGHT_WALL_GOAL_SIZE.height);
             (u = new CANNON.Box(new CANNON.Vec3(BACK_WALL_GOAL_SIZE.width, BACK_WALL_GOAL_SIZE.depth, BACK_WALL_GOAL_SIZE.height))),
                 (_ = new CANNON.Box(new CANNON.Vec3(LEFT_RIGHT_WALL_GOAL_SIZE.width, LEFT_RIGHT_WALL_GOAL_SIZE.depth, LEFT_RIGHT_WALL_GOAL_SIZE.height))),
                 (p = new CANNON.Box(new CANNON.Vec3(UP_WALL_GOAL_SIZE.width, UP_WALL_GOAL_SIZE.depth, UP_WALL_GOAL_SIZE.height))),
@@ -2200,7 +2324,7 @@ function CScenario() {
                 SHOW_3D_RENDER && m.addVisual(E);
         }),
         (this.createAreaGoal = function (t, n, i, o) {
-            // // console.log(arguments, 'createAreaGoal');
+            // // // console.log(arguments, 'createAreaGoal');
             var a = new CANNON.Box(new CANNON.Vec3(n.width, n.depth, n.height)),
                 s = new CANNON.Body({ mass: 0, userData: o });
             if (
@@ -2265,13 +2389,13 @@ function CScenario() {
             return l;
         }),
         (this.lineGoalCollision = function (e) {
-            // // // console.log('lineGoalCollision');
+            // // // // console.log('lineGoalCollision');
             rollReset = false;
             s_oGame.areaGoal(e.contact.bj.userData);
         }),
         (this.update = function () {
             e.step(PHYSICS_STEP);
-            // // console.log('update *****', PHYSICS_STEP);
+            // // // console.log('update *****', PHYSICS_STEP);
         }),
         (this.getGoalBody = function () {
             return h;
@@ -2305,15 +2429,16 @@ function CBall(e, t, n, i, o) {
                 i = this._goToPrevFrame;
             r.angularVelocity.x < 0 && (i = this._goToNextFrame),
                 n > 7 ? i() : n > 3 ? (_++, _ > 2 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > 1 ? (_++, _ > 3 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > MIN_BALL_VEL_ROTATION && (_++, _ > 4 / ROLL_BALL_RATE && (i(), (_ = 0)));
-                if(GUARD_HIT || GK_HIT){
-                    if(e < 0 && t < 1 && n < 1 && rollReset){
+                // if(GUARD_HIT || GK_HIT){
+                    // console.log(e,t,n,rollReset)
+                    if(t < 1 && rollReset){
                         rollReset = false;
                         s_oScenario.poleCollision();
                         s_oGame.resetPoleCollision();
                         s_oGame.areaGoal(), playSound("goal", 1, 0);
                         
                     }
-                }
+                // }
         }),
         (this._goToPrevFrame = function () {
             0 === p ? ((p = 6), a.gotoAndStop(p)) : (p--, a.gotoAndStop(p));
@@ -2399,30 +2524,30 @@ function CMain(e) {
     
     var t, n, i, o, a, s, r = 0, l = 0, c = STATE_LOADING;
     this.goalScore = e.goalScore;
-    (this.initContainer = function () {
-        var e = document.getElementById("canvas");
-        (s_oStage = new createjs.Stage(e)),
-            createjs.Touch.enable(s_oStage),
-            (s_oStage.preventSelection = !1),
-            (s_bMobile = jQuery.browser.mobile),
-            s_bMobile === !1
-                ? (s_oStage.enableMouseOver(20),
-                  $("body").on("contextmenu", "#canvas", function (e) {
-                      return !1;
-                  }),
-                  (FPS = FPS_DESKTOP),
-                  (FPS_TIME = 1 / FPS),
-                  (PHYSICS_STEP = 1 / (FPS * STEP_RATE)),
-                  (ROLL_BALL_RATE = 60 / FPS))
-                : (BALL_VELOCITY_MULTIPLIER = 0.8),
-            (s_iPrevTime = new Date().getTime()),
-            createjs.Ticker.addEventListener("tick", this._update),
-            createjs.Ticker.setFPS(FPS),
-            navigator.userAgent.match(/Windows Phone/i) && (DISABLE_SOUND_MOBILE = !0),
-            (s_oSpriteLibrary = new CSpriteLibrary()),
-            (i = new CPreloader()),
-            (t = !0);
-    }),
+        (this.initContainer = function () {
+            var e = document.getElementById("canvas");
+            (s_oStage = new createjs.Stage(e)),
+                createjs.Touch.enable(s_oStage),
+                (s_oStage.preventSelection = !1),
+                (s_bMobile = jQuery.browser.mobile),
+                s_bMobile === !1
+                    ? (s_oStage.enableMouseOver(20),
+                    $("body").on("contextmenu", "#canvas", function (e) {
+                        return !1;
+                    }),
+                    (FPS = FPS_DESKTOP),
+                    (FPS_TIME = 1 / FPS),
+                    (PHYSICS_STEP = 1 / (FPS * STEP_RATE)),
+                    (ROLL_BALL_RATE = 60 / FPS))
+                    : (BALL_VELOCITY_MULTIPLIER = 0.8),
+                (s_iPrevTime = new Date().getTime()),
+                createjs.Ticker.addEventListener("tick", this._update),
+                createjs.Ticker.setFPS(FPS),
+                navigator.userAgent.match(/Windows Phone/i) && (DISABLE_SOUND_MOBILE = !0),
+                (s_oSpriteLibrary = new CSpriteLibrary()),
+                (i = new CPreloader()),
+                (t = !0);
+        }),
         (this.soundLoaded = function () {
             r++;
             var e = Math.floor((r / l) * 100);
@@ -2523,6 +2648,7 @@ function CMain(e) {
         (this._onImagesLoaded = function () {
             r++;
             var e = Math.floor((r / l) * 100);
+          
             i.refreshLoader(e), r === l && (i.unload(), this.gotoMenu(true));
         }),
         (this._onAllImagesLoaded = function () {}),
@@ -2535,37 +2661,32 @@ function CMain(e) {
 
         }),
         (this.gotoMenu = function (status) {
+  
             (o = new CMenu()), (c = STATE_MENU), !status && s_oMenu._onButPlayRelease();
+
         }),
-        (this.gotoGame = function (value) {
+        (this.gotoGame = function (value, status) {
             goal_score = 0;
             if((GUARD_HIT || GK_HIT) && ROUNDS_NUM > 1){
-
                 BACK_WALL_GOAL_POSITION = { x: 0, y: 105, z: -2.7 },
                 GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;
-
-
             }
             // if(ROUNDS_NUM > 1) s_oMenu._onButPlayRelease();
-            
             value = value || n;
             this.gotoMenu(true);
             (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || 
-            (s_oSoundTrack = createjs.Sound.play("soundtrack", { loop: -1 }), s_oMenu._onAudioToggle())
+            (s_oSoundTrack = createjs.Sound.play("soundtrack", { loop: -1 }), s_oMenu._onAudioToggle(s_bAudioActive))
             if(value.roundsNum > 1) {
                 $(s_oMain).trigger("next_level", true);
-                
                 setTimeout(()=>{
                     (s = new CGame(value)), (c = STATE_GAME);
-
-                }, 3000)
+                }, 2000)
             } else{
-                (s = new CGame(value)), (c = STATE_GAME);
-
+                (s = new CGame(value, status)), (c = STATE_GAME);
             }
-            
-            // s_bMobile && s_oInterface._onFullscreen();
+            $(s_oMain).trigger("goLevel", true);
+            s_bMobile && s_oInterface._onFullscreen(true);
         }),
         (this.gotoHelp = function () {
             (a = new CHelp()), (c = STATE_HELP);
@@ -2606,7 +2727,7 @@ function CGoal(e, t, n, i) {
             (o.x = e), (o.y = t);
         }),
         (this.getDepthPos = function () {
-            // console.log(GOAL_LINE_POS,'GOAL_SPRITE_SWAP_Y', GOAL_SPRITE_SWAP_Y);
+            // // console.log(GOAL_LINE_POS,'GOAL_SPRITE_SWAP_Y', GOAL_SPRITE_SWAP_Y);
             // if(GK_HIT) GOAL_SPRITE_SWAP_Y = 100;
             return GOAL_SPRITE_SWAP_Y;
         }),
@@ -2716,7 +2837,12 @@ function CPreloader() {
                 r.addChild(s);
         }),
         (this.refreshLoader = function (s) {
-            // // console.log(s);
+            //console.log(s);
+           
+            if(ROUNDS_NUM == "0" && s == "100"){
+                $(s_oMain).trigger("initLoadReady", true);
+            }
+
             (n.text = s + "%"), (i.text = s + "%"), a.graphics.clear();
             var r = Math.floor((s * e) / 100);
             a.graphics.beginFill("rgba(255,255,255,0.01)").drawRect(o.x, o.y, r, t);
@@ -2978,13 +3104,13 @@ function CMenu() {
             this.refreshButtonPos(s_iOffsetX, s_iOffsetY);
     }),
         (this.refreshButtonPos = function (t, i) {
-            // (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || r.setPosition(e.x - t, i + e.y), a.setPosition(n.x + t, n.y + i);
+            (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || r && r.setPosition(e.x - t, i + e.y), a.setPosition(n.x + t, n.y + i);
         }),
         (this.unload = function () {
-            o.unload(), (o = null), (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || (r.unload(), (r = null)), s_oStage.removeAllChildren(), (s_oMenu = null);
+            o.unload(), (o = null), (DISABLE_SOUND_MOBILE !== !1 && s_bMobile !== !1) || (r && r.unload(), (r = null)), s_oStage.removeAllChildren(), (s_oMenu = null);
         }),
         (this._onButPlayRelease = function () {
-            // console.log('but play clicked ****************');
+            // // console.log('but play clicked ****************');
             this.unload(), 
             // playSound("click", 1, 0),
              s_oMain.gotoGame();
@@ -2992,9 +3118,25 @@ function CMenu() {
             s_bMobile && s_oInterface._onFullscreen();
 
         }),
-        (this._onAudioToggle = function () {
-            // // console.log('_onAudioToggle');
-            createjs.Sound.setMute(s_bAudioActive), (s_bAudioActive = !s_bAudioActive);
+        (this._onAudioToggle = function (s) {
+            // // // console.log('_onAudioToggle');
+            // console.log('audio toggle', s_bAudioActive, '_onAudioToggle');
+            if(ROUNDS_NUM == 5){
+                s = true;
+                s_bAudioActive = true;
+            }
+            if(s && s_bAudioActive){
+                s_bAudioActive = true;
+                createjs.Sound.setMute(s);
+                // (s_bAudioActive = !s_bAudioActive);
+
+            } 
+            if(!s && !s_bAudioActive){
+                s_bAudioActive = false;
+                createjs.Sound.setMute(s);
+                //  (s_bAudioActive = !s_bAudioActive);
+
+            }
         }),
         (this._onButInfoRelease = function () {
             // new CCreditsPanel();
@@ -3147,7 +3289,7 @@ function CHandSwipeAnim(e, t, n, i) {
         this
     );
 }
-////// // // console.error(e.goalKeeperVisible,'fdsfsd')
+////// // // // console.error(e.goalKeeperVisible,'fdsfsd')
 var CANVAS_WIDTH = 1360,
     CANVAS_HEIGHT = 640,
     CANVAS_WIDTH_HALF = 0.5 * CANVAS_WIDTH,
@@ -3970,7 +4112,7 @@ var camera,
             scene.add(e),
             controls.attach(e, t),
             scene.add(controls),
-            ////// // // console.log("CREATE"),
+            ////// // // // console.log("CREATE"),
             window.addEventListener("keydown", function (e) {
                 switch (e.keyCode) {
                     case 81:
@@ -4472,7 +4614,7 @@ var s_oInterface = null,
     s_cPanel = null,
     s_oScenario,
     s_bMobile,
-    s_bAudioActive = !0,
+    s_bAudioActive = !1,
     s_bFullscreen = !1,
     s_iCntTime = 0,
     s_iTimeElaps = 0,
@@ -6517,5 +6659,5 @@ var s_oMenu = null,
     // window.s_oMain = s_oMain;
     // window.s_cpreloader = s_cpreloader;
     // window.s_oMenu = s_oMenu;
-    // window.s_oGame = CGame;
-export const mainObj = { CMain: CMain, isIOS: isIOS, sizeHandler: sizeHandler, s_oMain: s_oMain};
+   // window.s_oGame = CGame();
+export const mainObj = { CMain: CMain, isIOS: isIOS, sizeHandler: sizeHandler, s_oMain: s_oMain,s_oGame: CGame};
