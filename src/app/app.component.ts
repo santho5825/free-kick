@@ -1,7 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import * as $ from 'jquery';
 import {obj} from 'src/assets/football/js/level';
-import {mainObj } from 'src/assets/football/js/main';
+import {mainObj } from 'src/assets/football/js/main_old';
 
 @Component({
   selector: 'app-root',

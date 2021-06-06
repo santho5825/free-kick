@@ -2561,7 +2561,7 @@ function CMain(e) {
         }),
         (this.gotoGame = function (value) {
             goal_score = 0;
-            if((GUARD_HIT || GK_HIT) && ROUNDS_NUM > 1){
+            if((GUARD_HIT || GK_HIT) && ROUNDS_NUM >= 1){
                 BACK_WALL_GOAL_POSITION = { x: 0, y: 105, z: -2.7 },
                 GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;
