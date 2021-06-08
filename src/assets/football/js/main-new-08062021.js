@@ -452,18 +452,18 @@ function CGame(e, status) {
             if (!y && (r && l && r.x != l.x && r.y != l.y) && !s_oMain.goalScore) {
                 if(s_oMain.goalScore == 0)
                     $(s_oMain).trigger("ball_swipe");
-                var params = {orderId:ORDER_ID, betAmount: $('#stakeAmount').val() ,whichClientType:'Mobile APK'}
-                var authtoken = localStorage.getItem('jwt').replace(/"/g,"");
-                var currDomain = (window.location.hostname == "localhost")?"https://www1.u.hl8id.uatserver.net":"";
-                jQuery.ajax({url:currDomain+"/freekicks/game/send-order.fk",
-                headers: {"Authorization": authtoken},
-                type:"POST", data:params,
-                dataType:"json",
-                success:function(data, textStatus, jqXHR) {
-                    if(data && data.data) {
-                        HIT_ODD = data.data.hitOdds;
-                        $(s_oMain).trigger("callSendOrder",[data]);
-                    }
+                // var params = {orderId:ORDER_ID, betAmount: $('#stakeAmount').val() ,whichClientType:'Mobile APK'}
+                // var authtoken = localStorage.getItem('jwt').replace(/"/g,"");
+                // var currDomain = (window.location.hostname == "localhost")?"https://www1.u.hl8id.uatserver.net":"";
+                // jQuery.ajax({url:currDomain+"/freekicks/game/send-order.fk",
+                // headers: {"Authorization": authtoken},
+                // type:"POST", data:params,
+                // dataType:"json",
+                // success:function(data, textStatus, jqXHR) {
+                //     if(data && data.data) {
+                //         HIT_ODD = data.data.hitOdds;
+                //         $(s_oMain).trigger("callSendOrder",[data]);
+                //     }
 
                 // // // // console.log(JSON.stringify({'point': 0, 'r':r, 'l':l}), l, FORCE_RATE, 'original' ,'GK_ODD => ', GK_ODD);
                 var position = '';
@@ -739,9 +739,9 @@ function CGame(e, status) {
 
                     //naga
   
-                }, error:function(jqXHR, textStatus, errorThrown) {
-                    alert('send orer error');
-                }})
+                // }, error:function(jqXHR, textStatus, errorThrown) {
+                //     alert('send orer error');
+                // }})
             }
         }),
         (this.refreshShadowCast = function (e, t, n) {
@@ -2684,8 +2684,8 @@ function CMain(e) {
                     GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 }
                 if (GK_HIT) {
-                    BACK_WALL_GOAL_POSITION = { x: 0, y: 107, z: -2.7 },
-                    GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-140, z: BACK_WALL_GOAL_POSITION.z };
+                    BACK_WALL_GOAL_POSITION = { x: 0, y: 105, z: -2.7 },
+                    GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 }
                 GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;
             }

@@ -228,7 +228,7 @@ constructor() {}
     //    return false;
    }
     // window.location.href = href;
-
+    
     var gkHit:any = soObj.data.gkHit == "N"? 0: 100;
     var config = soObj.data.nextRoundsConfig.colorConfig;
     var roundsNum = soObj.data.nextRoundsConfig.roundsNum;
@@ -238,12 +238,16 @@ constructor() {}
     var gkOdd = soObj.data.nextRoundsConfig.gkOdd;
     var guardHit = soObj.data.guardHit;
     var gkHit:any = soObj.data.gkHit;
+    hitOdds = 0.5;
+    gkHit = roundsNum == 2?'Y':'N';
+    guardHit= roundsNum > 2?'Y':'N';
     console.log('roundsNum => ',roundsNum);
     console.log('guardPos => ',guardPos);
     console.log('hitOdds => ',hitOdds);
     console.log('gkOdd => ',gkOdd);
     console.log('guardHit => ',guardHit);
     console.log('gkHit => ',gkHit);
+    
     if (this.currentRound > 1) {
         $('.Wrap').addClass('no-pointer');
         $('.cashOut').show();
