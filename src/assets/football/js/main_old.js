@@ -5,7 +5,7 @@ import * as jQuery from 'jquery';
 import { timer } from 'rxjs';
 // var createjs = {};
 var $ = jQuery;
-var Detector, s_bIsIphone, s_iScaleFactor;
+var Detector, s_bIsIphone, s_iScaleFactor, GK_VALUE;
 window.THREE = THREE;
 window.CANNON = CANNON;
 window.createjs = createjs;
@@ -567,7 +567,7 @@ function CGame(e) {
    
     if (position == 'RIGHT') {
         if (HIT_ODD == 0.5) {
-            offsetX = GUARD_HIT ? 1.01:0.997;
+            offsetX = GUARD_HIT ? 1.01:0.999;
             offsetY = 1.1;
 
         } else if (HIT_ODD == 3) {
@@ -584,7 +584,10 @@ function CGame(e) {
         else if(HIT_ODD == 1.2) {
             offsetX = 0.4;
             offsetY = 1;
-        } else{
+        } else if(HIT_ODD == 0.5){
+            offsetX = 0.5;
+            offsetY = 0.83;
+        }else{
             offsetX = 0.4;
             offsetY = 0.85;
         }
@@ -595,7 +598,7 @@ function CGame(e) {
             offsetY = 1.2;
 
         } else if(HIT_ODD == 0.5){
-            offsetX = 1.05;
+            offsetX = 1.08;
             offsetY = 0.9;
         } else if(HIT_ODD == 3){
             offsetX = 1.04;
@@ -1143,6 +1146,7 @@ function CGame(e) {
         GK_ODD = e.gkOdd,
         GUARD_HIT = e.guardHit,
         GK_HIT = e.gkHit,
+        GK_VALUE = e.gkValue,
         GOAL_KEEPER_VISIBLE = e.goalKeeperVisible,
         NUM_OF_PENALTY = e.num_of_penalty,
         MULTIPLIER_STEP = e.multiplier_step,
@@ -2340,13 +2344,13 @@ function CBall(e, t, n, i, o) {
                 n > 7 ? i() : n > 3 ? (_++, _ > 2 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > 1 ? (_++, _ > 3 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > MIN_BALL_VEL_ROTATION && (_++, _ > 4 / ROLL_BALL_RATE && (i(), (_ = 0)));
                 // if(GUARD_HIT || GK_HIT){
                     console.log(e ,t , n, rollReset);
-                    if(e < 0 && t < 0.5 && n < 1 && rollReset){
+                    if(t < 0.2 && rollReset){
                         rollReset = false;
                         s_oScenario.poleCollision();
                         s_oGame.resetPoleCollision();
                         console.log('rolls @@@@@@@@');
                         // setTimeout(()=>{
-                            s_oGame.areaGoal(), playSound("goal", 1, 0);
+                        s_oGame.areaGoal(), playSound("goal", 1, 0);
 
                         // }, 2000)
                         
@@ -2584,10 +2588,10 @@ function CMain(e) {
                 HIT_ODD = value.hitOdds,
                 GK_ODD = value.gkOdd,
                 GUARD_HIT = value.guardHit,
+                GK_VALUE = value.gkValue,
                 GK_HIT = value.gkHit;
-        
             }
-            if((GUARD_HIT || GK_HIT) && ROUNDS_NUM > 1){
+            if((GUARD_HIT || GK_HIT || HIT_ODD == GK_VALUE)){
                 BACK_WALL_GOAL_POSITION = { x: 0, y: 105, z: -2.7 },
                 GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;

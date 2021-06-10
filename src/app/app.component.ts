@@ -267,11 +267,14 @@ constructor() {}
     {id: 8, probability: soObj.data.gkHit == "N" ?gkHit: 60, value: 0.5,  color: 'W'},
     {id: 9, probability: soObj.data.gkHit == "N" ?gkHit: 100, value: 0.2,  color: 'D'}
 ];
-
+    let gkValue = 0.5;
     sampleCode.forEach((k)=>{
         let index = config.findIndex(l => k.color == l.color);
         if(index > -1) 
         k.value = config[index].odds;
+        if(k.color == 'W'){
+            gkValue = k.value;
+        }
     });
 
         // && soObj.data.gkHit == 'Y'? true: false
@@ -287,6 +290,7 @@ constructor() {}
             guardPos: guardPos,
             gameReset: false,
             goalScore: 0,
+            gkValue: gkValue,
             area_goal: [
                 {id: 0, probability: 100, value: 8}, 
                 {id: 1, probability: 80, value: 3},

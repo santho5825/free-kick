@@ -604,7 +604,7 @@ function CGame(e, status) {
    
     if (position == 'RIGHT') {
         if (HIT_ODD == 0.5) {
-            offsetX = GUARD_HIT ? 1.01:0.997;
+            offsetX = GUARD_HIT ?  1.01:0.999;
             offsetY = 1.1;
 
         } else if (HIT_ODD == 3) {
@@ -621,6 +621,9 @@ function CGame(e, status) {
         else if(HIT_ODD == 1.2) {
             offsetX = 0.4;
             offsetY = 1;
+        } else if(HIT_ODD == 0.5){
+            offsetX = 0.5;
+            offsetY = 0.83;
         } else{
             offsetX = 0.4;
             offsetY = 0.85;
@@ -632,7 +635,7 @@ function CGame(e, status) {
             offsetY = 1.2;
 
         } else if(HIT_ODD == 0.5){
-            offsetX = 1.05;
+            offsetX = 1.08;
             offsetY = 0.9;
         } else if(HIT_ODD == 3){
             offsetX = 1.04;
@@ -2701,7 +2704,7 @@ function CMain(e) {
                 GK_VALUE = value.gkValue;
         
             }
-            if((GUARD_HIT || GK_HIT) && ROUNDS_NUM > 1){
+            if((GUARD_HIT || GK_HIT || HIT_ODD == GK_VALUE)){
                 BACK_WALL_GOAL_POSITION = { x: 0, y: 105, z: -2.7 },
                 GOAL_LINE_POS = { x: 0, y: BACK_WALL_GOAL_POSITION.y - UP_WALL_GOAL_SIZE.depth-130, z: BACK_WALL_GOAL_POSITION.z };
                 GOAL_SPRITE_SWAP_Y = GOAL_LINE_POS.y;
