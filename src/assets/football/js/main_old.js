@@ -956,8 +956,8 @@ function CGame(e) {
         }),
         (this.endTurn = function () {
             // this.gotoMenu();
-            // this.restartGame();
-            // this.restartLevel();
+            this.restartGame();
+            this.restartLevel();
             I < NUM_OF_PENALTY
                 ? (I++, t.refreshLaunchBoard(I, NUM_OF_PENALTY), this.resetScene(), (y = !1), (m = MS_TIME_SWIPE_START))
                 : ((G = STATE_FINISH), _ > s_iBestScore && ((s_iBestScore = Math.floor(_)), saveItem(LOCALSTORAGE_STRING[LOCAL_BEST_SCORE], Math.floor(_))), t.createWinPanel(Math.floor(_)), $(s_oMain).trigger("end_level", M));
@@ -1029,8 +1029,14 @@ function CGame(e) {
         }),
         (this.resetScene = function () {
             // // // // console.log('resetSccene');
-            // (b = !1), (w = !1), (L = !1), (R = !1), (N = !1), (x = !1), 
-            S.setAlpha(0), S.fadeAnimation(1),
+            // (b = !1),
+            //  (w = !1), 
+            //  (L = !1), 
+             (R = !1), 
+             (N = !1), 
+             (x = !1), 
+            S.setAlpha(0), 
+            S.fadeAnimation(1),
              S.runAnim(IDLE);
             // this.resetBallPosition(), this.sortDepth(o, u), 
             // this.resetDefenderPosition();
@@ -2333,7 +2339,7 @@ function CBall(e, t, n, i, o) {
             r.angularVelocity.x < 0 && (i = this._goToNextFrame),
                 n > 7 ? i() : n > 3 ? (_++, _ > 2 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > 1 ? (_++, _ > 3 / ROLL_BALL_RATE && (i(), (_ = 0))) : n > MIN_BALL_VEL_ROTATION && (_++, _ > 4 / ROLL_BALL_RATE && (i(), (_ = 0)));
                 // if(GUARD_HIT || GK_HIT){
-                    // console.log(e ,t , n);
+                    console.log(e ,t , n, rollReset);
                     if(e < 0 && t < 0.5 && n < 1 && rollReset){
                         rollReset = false;
                         s_oScenario.poleCollision();
